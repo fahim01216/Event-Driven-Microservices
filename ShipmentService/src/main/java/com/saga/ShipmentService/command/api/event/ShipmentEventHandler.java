@@ -1,6 +1,7 @@
 package com.saga.ShipmentService.command.api.event;
 
 import com.saga.CommonService.event.OrderShippedEvent;
+import com.saga.CommonService.event.ShipmentCancelledEvent;
 import com.saga.ShipmentService.command.api.data.Shipment;
 import com.saga.ShipmentService.command.api.data.ShipmentRepository;
 import org.axonframework.eventhandling.EventHandler;
@@ -19,6 +20,14 @@ public class ShipmentEventHandler {
     public void on(OrderShippedEvent event) {
         Shipment shipment = new Shipment();
         BeanUtils.copyProperties(event, shipment);
+        shipmentRepository.save(shipment);
+    }
+
+    // step : 13
+    @EventHandler
+    public void on(ShipmentCancelledEvent event) {
+        Shipment shipment = shipmentRepository.findById(event.getShipmentId()).get();
+        shipment.setShipmentStatus(event.getShipmentStatus());
         shipmentRepository.save(shipment);
     }
 }

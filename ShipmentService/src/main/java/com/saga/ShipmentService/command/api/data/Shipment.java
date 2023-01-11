@@ -11,5 +11,6 @@ public class Shipment {
     @Id
     private String shipmentId;
     private String orderId;
+    private String paymentId;
     private String shipmentStatus;
 }

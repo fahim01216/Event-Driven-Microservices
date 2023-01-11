@@ -17,7 +17,7 @@ import java.util.UUID;
 public class OrderCommandController {
 
     @Autowired
-    private CommandGateway commandGateway;
+    private transient CommandGateway commandGateway;
 
     // step : 1
     // handle post request for creating the order

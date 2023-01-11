@@ -1,11 +1,14 @@
 package com.saga.OrderService.command.api.aggregate;
 
 
+import com.saga.CommonService.command.CancelOrderCommand;
 import com.saga.CommonService.command.CompleteOrderCommand;
+import com.saga.CommonService.event.OrderCancelledEvent;
 import com.saga.CommonService.event.OrderCompletedEvent;
 import com.saga.OrderService.command.api.command.CreateOrderCommand;
 import com.saga.OrderService.command.api.event.OrderCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
@@ -75,6 +78,20 @@ public class OrderAggregate {
     // step : 14
     @EventSourcingHandler
     public void on(OrderCompletedEvent event) {
+        this.orderStatus = event.getOrderStatus();
+    }
+
+    // step : 7
+    @CommandHandler
+    public void handle(CancelOrderCommand cancelOrderCommand) {
+        OrderCancelledEvent orderCancelledEvent = new OrderCancelledEvent();
+        BeanUtils.copyProperties(cancelOrderCommand, orderCancelledEvent);
+        AggregateLifecycle.apply(orderCancelledEvent);
+    }
+
+    // step : 7
+    @EventSourcingHandler
+    public void on(OrderCancelledEvent event) {
         this.orderStatus = event.getOrderStatus();
     }
 }

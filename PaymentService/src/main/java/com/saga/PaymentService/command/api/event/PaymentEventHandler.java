@@ -1,6 +1,7 @@
 package com.saga.PaymentService.command.api.event;
 
 
+import com.saga.CommonService.event.PaymentCancelledEvent;
 import com.saga.CommonService.event.PaymentProcessedEvent;
 import com.saga.PaymentService.command.api.data.Payment;
 import com.saga.PaymentService.command.api.data.PaymentRepository;
@@ -26,6 +27,14 @@ public class PaymentEventHandler {
                 .paymentStatus("Payment Completed")
                 .build();
 
+        paymentRepository.save(payment);
+    }
+
+    // step : 12
+    @EventHandler
+    public void on(PaymentCancelledEvent event) {
+        Payment payment = paymentRepository.findById(event.getPaymentId()).get();
+        payment.setPaymentStatus(event.getPaymentStatus());
         paymentRepository.save(payment);
     }
 }
